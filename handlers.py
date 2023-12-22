@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webelement import WebElement
 import random
 from selenium.webdriver import Chrome
-
+ 
 class Element:
     def __init__(self, precursor: WebElement) -> None:
         self.precursor = precursor
@@ -12,7 +12,7 @@ class Element:
     def click(self):
         self.precursor.click()
         return self
-
+ 
     def typeSlow(self, text: str, speedMultiplier):
         for x in text:
             self.precursor.send_keys(x)
@@ -21,7 +21,7 @@ class Element:
     
     def getChildren(self, tag="div"):
         return self.precursor.find_elements(By.TAG_NAME, tag)
-
+ 
     def scrollIntoView(self, actor: ActionChains):
         actor.move_to_element(self.precursor).perform()
         return self
@@ -34,23 +34,25 @@ class DOBNavigator:
         self.max_year = 2000
         self.section_type = None
         pass
-
+ 
     def openMenu(self, section_type):
         self.section_type = section_type
-
-        match section_type:
-            case "day":
-                value = "[class*='day_']"
-            case "month":
-                value = "[class*='month_']"
-            case "year":
-                value = "[class*='year_']"
+ 
+        if section_type == "day":
+            value = "[class*='day_']"
+        elif section_type == "month":
+            value = "[class*='month_']"
+        elif section_type == "year":
+            value = "[class*='year_']"
+        else:
+            raise ValueError("Invalid section_type")
+ 
         self.driver.find_element(By.CSS_SELECTOR, value).click()
         return True
-
+ 
     def getMenuObject(self):
         return Element(self.driver.find_element(By.CSS_SELECTOR, "[class*='-menu']"))
-
+ 
     def chooseElement(self, elementList: list[WebElement]):
         chosen_element = random.choice(elementList)
         
